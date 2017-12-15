@@ -266,7 +266,7 @@ I also plan to pursue the following analysis paths:
 * Attempt to replicate the other plots in Koopmann-Holm et al.'s Figure 1.
 * Investigate Ideal LAP differences by US region (primarily West Coast versus East Coast). 
 ```{r echo=F}
-# ANCOVA for group_by Region 
+# ANCOVA for group_by Region. This should still control for Age and relevent other affect. 
 ```
 * Look at ideal affects by ethnic identification based on previous literature.
 ```{r echo=F}
@@ -278,8 +278,23 @@ I also plan to pursue the following analysis paths:
 ```
 * Use a chi squared test to see if the gender of Meditators and Nonmeditators significantly differed.
 * Use an ANOVA to see if the age of Meditators and Nonmeditators significantly differed.
-* Compare the average number of years that Koopmann-Holm et al.'s and our Meditators practiced. 
+* Compare the average number of years that Koopmann-Holm et al.'s and our Meditators practiced.
+```{r}
+
+```
+
 * Also compare the average duration of Meditators' practice sessions and compare with Koopamnn-Holm's. This could be a partial cause of the failure to replicate.
+* Make a scatterplot of ideal LAP reponses for Meditators and Nonmeditators.
+```{r echo=F}
+s <- ggplot(data=joined,
+            mapping=aes(x=Meditator,
+                        y=IdealLAP,
+                        color=Meditator))
+s + geom_jitter(width=.2)+
+  theme_minimal()+
+  ggtitle("Ideal LAP ratings by Meditators and Nonmeditators")
+```
+* Double check that my n() is not messing anything up. I'm not confident about it.
 
 ## Discussion
 
