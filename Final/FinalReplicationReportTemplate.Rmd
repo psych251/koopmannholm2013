@@ -158,7 +158,7 @@ ActualHAP <- rowMeans(cbind(FinalData$A_enthusiastic, FinalData$A_euphoric))
 combined_data <- cbind(IdealLAP, IdealHAP, ActualLAP, ActualHAP)
 combined_data <- as.data.frame(combined_data)
 # join with relevent parts of pilotBData
-B <- cbind(FinalData$Meditator, FinalData$Age, FinalData$Gender, FinalData$Ethnicity)
+B <- cbind(FinalData$Meditator, FinalData$Age, FinalData$Gender, FinalData$Ethnicity, FinalData$Region, FinalData$Frequency, FinalData$`How many minutes`)
 B <- as.data.frame(B)
 joined <-  cbind(B, combined_data)
 joined <- as.data.frame(joined)
@@ -167,6 +167,9 @@ colnames(joined)[1] <- "Meditator"
 colnames(joined)[2] <- "Age"
 colnames(joined)[3] <- "Gender"
 colnames(joined)[4] <- "Ethnicity"
+colnames(joined)[5] <- "Region"
+colnames(joined)[6] <- "Frequency"
+colnames(joined)[7] <- "Duration"
 # Create Confidence Intervals
 sem <- function(x) {sd(x, na.rm=TRUE) / sqrt(sum(!is.na((x))))}
 ci <- function(x) {sem(x) * 1.96}
@@ -194,6 +197,32 @@ Ethnicity <- joined %>%
   summarise(n = n())
 # Change names of factor levels for Meditator from "NA_1 year or more" and "No_NA" to "Meditators" and "Nonmeditators". There will also be a blank for the NA_NA group that are not included in the final plot.
 levels(joined$Meditator) <- c("Meditators", "Nonmeditators")
+# Factor levels for Region.
+levels(joined$Region) <- c("West", "Midwest", "South", "Northeast")
+# Factor levels for Frequency.
+levels(joined$Frequency) <- list(Never="1", Two="2", Three="3", Four="4", Five="5", Six="6", MultipleTimesADay="7")
+# Factor levels for Duration
+levels(joined$Duration) <- list('<5'="1",
+                                '~10'="2",
+                                '~15'="3",
+                                '~20'="4",
+                                '~25'="5",
+                                '~30'="6",
+                                '~35'="7",
+                                '~40'="8",
+                                '~45'="9",
+                                '~50'="10",
+                                '~55'="11",
+                                'an hour or more'="12")
+# Factor levels for Ethnicity
+levels(joined$Ethnicity) <- list('Caucasian American'="1",
+                                  'Black or African American'="2", 
+                                  'Asian American'="3",
+                                  'American Indian or Alaska Native'="4",
+                                  'Asian'="5",
+                                  'Native Hawaiian or Pacific Islander'="6",
+                                  'Caucasian European'="7",
+                                  'Other'="8")
 ```
 
 ### Confirmatory analysis
@@ -230,7 +259,7 @@ fit2_summary <- summary(fit2)
 
 ```{r echo = F, results = "asis", message = FALSE}
 print(xtable::xtable(fit2_summary, caption = "ANCOVA Summary"),
-type = "html", html.table.attributes = "border=0")
+type = "html")
 ```
 
 ```{r echo = F}
@@ -263,14 +292,105 @@ knitr::kable(My_eta, caption = "Partial eta squared values")
   
 ###Exploratory analyses
 I also plan to pursue the following analysis paths:
-* Attempt to replicate the other plots in Koopmann-Holm et al.'s Figure 1.
-* Investigate Ideal LAP differences by US region (primarily West Coast versus East Coast). 
+####Replicating the other plots in Koopmann-Holm et al. Figure 1
+
+
+####Ideal LAP differences by US Region 
 ```{r echo=F}
-# ANCOVA for group_by Region. This should still control for Age and relevent other affect. 
+# Investigate Ideal LAP differences by US region (primarily West Coast versus East Coast).
+region <- joined %>%
+  group_by(Region) %>%
+  summarise(MeanAge = mean(Age),
+            MeanActualLAP = mean(ActualLAP),
+            MeanIdealLAP = mean(IdealLAP),
+            "ci" = ci(IdealLAP),
+            cilow = MeanIdealLAP - ci,
+            cihi = MeanIdealLAP + ci,
+            n=n())
 ```
-* Look at ideal affects by ethnic identification based on previous literature.
+
+```{r echo = F}
+p <- ggplot(data=region,
+            mapping = aes(x=Region, 
+                          y = MeanIdealLAP))
+p + geom_col(aes(fill = Region))+
+  xlab("Region")+ 
+  ylab("Average Ideal LAP Word Rating")+
+  ggtitle("Ideal LAP ratings by Region")+
+  theme_minimal()+
+  geom_errorbar(data = region,
+                mapping = aes(x=Region, ymin=cilow, ymax=cihi), 
+                width=.2,                   
+                position=position_dodge(.9))
+ 
+```
 ```{r echo=F}
-# ANCOVA for group_by Ethnicity, in both these cases controlling for Age and Actual affect.
+fitregion <- aov(IdealLAP ~ Region + Age + ActualLAP, data=joined)
+fitregion
+```
+
+```{r echo=F}
+layout(matrix(c(1,2,3,4),2,2))
+plot(fitregion)
+```
+
+```{r echo = F}
+fitregion_summary <- summary(fitregion)
+```
+
+```{r echo = F, results = "asis"}
+print(xtable::xtable(fitregion_summary, caption = "ANCOVA Region Summary"),type = "html")
+```
+
+####Ideal LAP Differences by Reported Ethnicity
+```{r echo=F}
+# Investigate Ideal LAP differences by US region (primarily West Coast versus East Coast).
+plotEthnicity <- joined %>%
+  group_by(Ethnicity) %>%
+  summarise(MeanAge = mean(Age),
+            MeanActualLAP = mean(ActualLAP),
+            MeanIdealLAP = mean(IdealLAP),
+            "ci" = ci(IdealLAP),
+            cilow = MeanIdealLAP - ci,
+            cihi = MeanIdealLAP + ci,
+            n=n())
+```
+
+```{r echo = F}
+p <- ggplot(data=plotEthnicity,
+            mapping = aes(x=Ethnicity, 
+                          y = MeanIdealLAP))
+p + geom_col(aes(fill = Ethnicity))+
+  xlab("Ethnicity")+ 
+  ylab("Average Ideal LAP Word Rating")+
+  ggtitle("Ideal LAP ratings by Ethnicity")+
+  theme_minimal()+
+  geom_errorbar(data = plotEthnicity,
+                mapping = aes(x=Ethnicity, ymin=cilow, ymax=cihi), 
+                width=.2,                   
+                position=position_dodge(.9))+
+  scale_fill_discrete(drop=FALSE) + 
+  scale_x_discrete(drop=FALSE)+
+  theme(axis.text.x = element_text(angle = 55, vjust = 1, hjust=1))
+ 
+```
+
+```{r echo=F}
+fitEth <- aov(IdealLAP ~ Ethnicity + Age + ActualLAP, data=joined)
+fitregion
+```
+
+```{r echo=F}
+layout(matrix(c(1,2,3,4),2,2))
+plot(fitEth)
+```
+
+```{r echo = F}
+fitEth_summary <- summary(fitEth)
+```
+
+```{r echo = F, results = "asis"}
+print(xtable::xtable(fitEth_summary, caption = "ANCOVA Ethnicity Summary"),type = "html")
 ```
 * See if there are correlations between frequency and duration of meditation sessions and Ideal LAP.
 ```{r echo=F}
@@ -278,14 +398,35 @@ I also plan to pursue the following analysis paths:
 ```
 * Use a chi squared test to see if the gender of Meditators and Nonmeditators significantly differed.
 * Use an ANOVA to see if the age of Meditators and Nonmeditators significantly differed.
-* Compare the average number of years that Koopmann-Holm et al.'s and our Meditators practiced.
-```{r}
 
+####Frequency of Meditators' practice
+```{r echo=F}
+# Plotting Meditators' reported Frequency for meditating.
+s <- ggplot(data= subset(joined, Meditator == "Meditators"),
+            mapping=aes(x=Frequency))
+s + geom_bar()+
+  theme_minimal()+
+  ggtitle("Meditator responses to 'How often do you meditate?'")+
+  xlab("Times per week the participant meditates")+
+  scale_fill_discrete(drop=FALSE) + 
+  scale_x_discrete(drop=FALSE)
 ```
 
-* Also compare the average duration of Meditators' practice sessions and compare with Koopamnn-Holm's. This could be a partial cause of the failure to replicate.
-* Make a scatterplot of ideal LAP reponses for Meditators and Nonmeditators.
+####Duration of Meditators' Practice
 ```{r echo=F}
+s <- ggplot(data= subset(joined, Meditator=="Meditators"),
+            mapping=aes(x=Duration))
+s + geom_bar()+
+  theme_minimal()+
+  ggtitle("Meditator responses to \n'About how many minutes do you meditate per meditation session?'")+
+  xlab("Meditation session duration")+ 
+  scale_fill_discrete(drop=FALSE) + 
+  scale_x_discrete(drop=FALSE)
+```
+
+####Ideal LAP Responses as Scatterplot
+```{r echo=F}
+# Make a scatterplot of ideal LAP reponses for Meditators and Nonmeditators.
 s <- ggplot(data=joined,
             mapping=aes(x=Meditator,
                         y=IdealLAP,
@@ -294,7 +435,7 @@ s + geom_jitter(width=.2)+
   theme_minimal()+
   ggtitle("Ideal LAP ratings by Meditators and Nonmeditators")
 ```
-* Double check that my n() is not messing anything up. I'm not confident about it.
+
 
 ## Discussion
 
@@ -304,7 +445,7 @@ The primary result of the confirmatory analysis shows no significant difference 
 
 ### Commentary
 
-This inability to replicate the key statistic could be explained by a number of differences between the original study and this replication. First, Koopmann-Holm et al. recruited students on campus and then directed them to an online study. That campus population differed in age from our replication and may also contain less variance between participants in comparison with our US-wide sample. Secondly, Koopmann-Holm et al. recruited Meditators and Nonmeditators separately. Our replication used a short block of eligibility questions that masked the eligibility criteria. Thus, while Koopmann-Holm, et al.'s Meditators were recruited for being meditators (or so it sounds in the article), our Meditators were unaware that their meditation practice was central to the study. Perhaps Koopmann-Holm et al.'s Meditators' awareness of the importance of their meditating primed them to report higher LAP values? Finally, our implementation of the AVI split up ideal and actual affect sections into 3 sections each to minimize participant fatigue. In comparison with the original AVI where ideal and actual affect each have one page, our AVI could cause participants to be less certain of which section (ideal or actual) they were completing (I did, however, repeat the appropriate instructions at the top of each survey page). 
+This inability to replicate the key statistic could be explained by a number of differences between the original study and this replication. First, Koopmann-Holm et al. recruited students on campus and then directed them to an online study. That campus population differed in age from our replication and may also contain less variance between participants in comparison with our US-wide sample. Secondly, Koopmann-Holm et al. recruited Meditators and Nonmeditators separately. Our replication used a short block of eligibility questions that masked the eligibility criteria. Thus, while Koopmann-Holm, et al.'s Meditators were recruited for being meditators (or so it sounds in the article), our Meditators were unaware that their meditation practice was central to the study. Perhaps Koopmann-Holm et al.'s Meditators' awareness of the importance of their meditating primed them to report higher LAP values? Directly comparing the average number of years Meditators meditated between the original and this replication be ideal. Unfortunately I failed to collect the number of years Meditators practiced (in the final version of the survey participants only noted if it was less than one year or more than one year). While the frequency and duration of meditation looks similar for the original study and the replication, the long term effects (measured in years) remains unknown. Finally, our implementation of the AVI split up ideal and actual affect sections into 3 sections each to minimize participant fatigue. In comparison with the original AVI where ideal and actual affect each have one page, our AVI could cause participants to be less certain of which section (ideal or actual) they were completing (I did, however, repeat the appropriate instructions at the top of each survey page). 
 <!--
 Add open-ended commentary (if any) reflecting (a) insights from follow-up exploratory analysis, (b) assessment of the meaning of the replication (or not) - e.g., for a failure to replicate, are the differences between original and present study ones that definitely, plausibly, or are unlikely to have been moderators of the result, and (c) discussion of any objections or challenges raised by the current and original authors about the replication attempt.  None of these need to be long.
 -->
