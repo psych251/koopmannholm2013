@@ -119,7 +119,7 @@ Rather than starting with a batch of 80 HITs as originally planned, I created 8 
 ##Results
 
 ### Data preparation
-I am uploading a version of the data that does *not* have MTurk IDs or other identifying information (I removed those values from the csv file). NB: I removed the second row of the downloaded csv file which contained the exact text of each question.
+I am uploading a version of the data that does *not* have MTurk IDs or other identifying information (I removed those values from the csv file). NB: I removed the second row of the downloaded csv file which contained the exact text of each question (see .Rmd file for additional information)4.
 
 Following Koopmann-Holm et al.'s analysis, I combine AVI responses for "calm" and "peaceful" together to measure LAP and AVI responses for "enthusiastic" and "euphoric" together to measure HAP. 
 	
@@ -245,7 +245,6 @@ knitr::kable(toPlot, caption = "Summary Data")
 
 ```{r echo=F}
 fit2 <- aov(IdealLAP ~ Meditator + Age + ActualLAP, data=joined)
-fit2
 ```
 
 ```{r echo=F}
@@ -269,7 +268,7 @@ p <- ggplot(data=toPlot,
 p + geom_col(aes(fill = Meditator))+
   xlab("Meditators or Nonmeditators")+ 
   ylab("Average Ideal LAP Word Rating")+
-  ggtitle("Figure 1. Group Differences Emerge in Ideal LAP Affect (Study 1).")+
+  ggtitle("Figure 1. Ideal LAP")+
   theme_minimal()+
   geom_errorbar(data = toPlot,
                 mapping = aes(x=Meditator, ymin=cilow, ymax=cihi), 
@@ -291,11 +290,184 @@ knitr::kable(My_eta, caption = "Partial eta squared values")
 ```
   
 ###Exploratory analyses
-I also plan to pursue the following analysis paths:
+
+####Ideal LAP Responses as Scatterplot
+
+```{r echo=F}
+# Make a scatterplot of ideal LAP reponses for Meditators and Nonmeditators.
+s <- ggplot(data=joined,
+            mapping=aes(x=Meditator,
+                        y=IdealLAP,
+                        color=Meditator))
+s + geom_jitter(width=.2)+
+  theme_minimal()+
+  ggtitle("Ideal LAP ratings by Meditators and Nonmeditators")
+```
+
 ####Replicating the other plots in Koopmann-Holm et al. Figure 1
 
+#####Ideal HAP
+
+```{r echo=F}
+plotIdealHAP <- joined %>%
+  group_by(Meditator) %>%
+  summarise(MeanAge = mean(Age),
+            MeanActualHAP = mean(ActualHAP),
+            MeanIdealHAP = mean(IdealHAP),
+            "ci" = ci(IdealHAP),
+            cilow = MeanIdealHAP - ci,
+            cihi = MeanIdealHAP + ci,
+            n=n())
+```
+
+```{r echo = F, results = 'asis', message=FALSE}
+knitr::kable(plotIdealHAP, caption = "Ideal HAP Summary Data") 
+```
+
+```{r echo=F}
+fitIdealHAP <- aov(IdealHAP ~ Meditator + Age + ActualHAP, data=joined)
+```
+
+```{r echo=F}
+layout(matrix(c(1,2,3,4),2,2))
+plot(fitIdealHAP)
+```
+
+```{r echo = F}
+fitIdealHAP_summary <- summary(fitIdealHAP)
+```
+
+```{r echo = F, results = "asis", message = FALSE}
+print(xtable::xtable(fitIdealHAP_summary, caption = "Ideal HAP ANCOVA Summary"),
+type = "html")
+```
+
+```{r echo = F}
+p <- ggplot(data=plotIdealHAP,
+            mapping = aes(x=Meditator, 
+                          y = MeanIdealHAP))
+p + geom_col(aes(fill = Meditator))+
+  xlab("Meditators or Nonmeditators")+ 
+  ylab("Average Ideal HAP Word Rating")+
+  ggtitle("Figure 1. Ideal HAP")+
+  theme_minimal()+
+  geom_errorbar(data = plotIdealHAP,
+                mapping = aes(x=Meditator, ymin=cilow, ymax=cihi), 
+                width=.2,                   
+                position=position_dodge(.9))
+ 
+```
+
+#####Actual LAP
+
+The similarities in Actual LAP ratings between Meditators and Nonmeditators mirror Koopmann-Holm et al.'s finding in Figure 1 (above).
+
+```{r echo=F}
+plotActualLAP <- joined %>%
+  group_by(Meditator) %>%
+  summarise(MeanAge = mean(Age),
+            MeanActualLAP = mean(ActualLAP),
+            MeanIdealLAP = mean(IdealLAP),
+            "ci" = ci(ActualLAP),
+            cilow = MeanActualLAP - ci,
+            cihi = MeanActualLAP + ci,
+            n=n())
+```
+
+```{r echo = F, results = 'asis', message=FALSE}
+knitr::kable(plotActualLAP, caption = "Actual LAP Summary Data") 
+```
+
+```{r echo=F}
+fitActualLAP <- aov(ActualLAP ~ Meditator + Age + IdealLAP, data=joined)
+```
+
+```{r echo=F}
+layout(matrix(c(1,2,3,4),2,2))
+plot(fitActualLAP)
+```
+
+```{r echo = F}
+fitActualLAP_summary <- summary(fitActualLAP)
+```
+
+```{r echo = F, results = "asis", message = FALSE}
+print(xtable::xtable(fitActualLAP_summary, caption = "Actual LAP ANCOVA Summary"),
+type = "html")
+```
+
+```{r echo = F}
+p <- ggplot(data=plotActualLAP,
+            mapping = aes(x=Meditator, 
+                          y = MeanActualLAP))
+p + geom_col(aes(fill = Meditator))+
+  xlab("Meditators or Nonmeditators")+ 
+  ylab("Average Actual LAP Word Rating")+
+  ggtitle("Figure 1. Actual LAP")+
+  theme_minimal()+
+  geom_errorbar(data = plotActualLAP,
+                mapping = aes(x=Meditator, ymin=cilow, ymax=cihi), 
+                width=.2,                   
+                position=position_dodge(.9))
+ 
+```
+
+#####Actual HAP
+
+The similarities in Actual HAP ratings between Meditators and Nonmeditators mirror Koopmann-Holm et al.'s finding in Figure 1 (above).
+
+```{r echo=F}
+plotActualHAP <- joined %>%
+  group_by(Meditator) %>%
+  summarise(MeanAge = mean(Age),
+            MeanActualHAP = mean(ActualHAP),
+            MeanIdealHAP = mean(IdealHAP),
+            "ci" = ci(ActualHAP),
+            cilow = MeanActualHAP - ci,
+            cihi = MeanActualHAP + ci,
+            n=n())
+```
+
+```{r echo = F, results = 'asis', message=FALSE}
+knitr::kable(plotActualHAP, caption = "Actual HAP Summary Data") 
+```
+
+```{r echo=F}
+fitActualHAP <- aov(ActualHAP ~ Meditator + Age + IdealHAP, data=joined)
+```
+
+```{r echo=F}
+layout(matrix(c(1,2,3,4),2,2))
+plot(fitActualHAP)
+```
+
+```{r echo = F}
+fitActualHAP_summary <- summary(fitActualHAP)
+```
+
+```{r echo = F, results = "asis", message = FALSE}
+print(xtable::xtable(fitActualHAP_summary, caption = "Actual HAP ANCOVA Summary"),
+type = "html")
+```
+
+```{r echo = F}
+p <- ggplot(data=plotActualHAP,
+            mapping = aes(x=Meditator, 
+                          y = MeanActualHAP))
+p + geom_col(aes(fill = Meditator))+
+  xlab("Meditators or Nonmeditators")+ 
+  ylab("Average Actual HAP Word Rating")+
+  ggtitle("Figure 1. Actual HAP")+
+  theme_minimal()+
+  geom_errorbar(data = plotActualHAP,
+                mapping = aes(x=Meditator, ymin=cilow, ymax=cihi), 
+                width=.2,                   
+                position=position_dodge(.9))
+ 
+```
 
 ####Ideal LAP differences by US Region 
+
 ```{r echo=F}
 # Investigate Ideal LAP differences by US region (primarily West Coast versus East Coast).
 region <- joined %>%
@@ -326,7 +498,6 @@ p + geom_col(aes(fill = Region))+
 ```
 ```{r echo=F}
 fitregion <- aov(IdealLAP ~ Region + Age + ActualLAP, data=joined)
-fitregion
 ```
 
 ```{r echo=F}
@@ -343,6 +514,7 @@ print(xtable::xtable(fitregion_summary, caption = "ANCOVA Region Summary"),type 
 ```
 
 ####Ideal LAP Differences by Reported Ethnicity
+
 ```{r echo=F}
 # Investigate Ideal LAP differences by US region (primarily West Coast versus East Coast).
 plotEthnicity <- joined %>%
@@ -356,7 +528,7 @@ plotEthnicity <- joined %>%
             n=n())
 ```
 
-```{r echo = F}
+```{r echo = F, warning=F}
 p <- ggplot(data=plotEthnicity,
             mapping = aes(x=Ethnicity, 
                           y = MeanIdealLAP))
@@ -377,7 +549,6 @@ p + geom_col(aes(fill = Ethnicity))+
 
 ```{r echo=F}
 fitEth <- aov(IdealLAP ~ Ethnicity + Age + ActualLAP, data=joined)
-fitregion
 ```
 
 ```{r echo=F}
@@ -392,14 +563,9 @@ fitEth_summary <- summary(fitEth)
 ```{r echo = F, results = "asis"}
 print(xtable::xtable(fitEth_summary, caption = "ANCOVA Ethnicity Summary"),type = "html")
 ```
-* See if there are correlations between frequency and duration of meditation sessions and Ideal LAP.
-```{r echo=F}
-# Inside Meditators, linear regression for each of these items? ="Frequency" and "How many minutes". Could also do a combo thing where you multiply Frequency and Duration together and then plot that against IdealLAP scores?
-```
-* Use a chi squared test to see if the gender of Meditators and Nonmeditators significantly differed.
-* Use an ANOVA to see if the age of Meditators and Nonmeditators significantly differed.
 
 ####Frequency of Meditators' practice
+
 ```{r echo=F}
 # Plotting Meditators' reported Frequency for meditating.
 s <- ggplot(data= subset(joined, Meditator == "Meditators"),
@@ -413,6 +579,7 @@ s + geom_bar()+
 ```
 
 ####Duration of Meditators' Practice
+
 ```{r echo=F}
 s <- ggplot(data= subset(joined, Meditator=="Meditators"),
             mapping=aes(x=Duration))
@@ -424,18 +591,76 @@ s + geom_bar()+
   scale_x_discrete(drop=FALSE)
 ```
 
-####Ideal LAP Responses as Scatterplot
+####No linear relationship between Ideal LAP ratings and frequency of meditation practice
+
 ```{r echo=F}
-# Make a scatterplot of ideal LAP reponses for Meditators and Nonmeditators.
-s <- ggplot(data=joined,
-            mapping=aes(x=Meditator,
-                        y=IdealLAP,
-                        color=Meditator))
-s + geom_jitter(width=.2)+
-  theme_minimal()+
-  ggtitle("Ideal LAP ratings by Meditators and Nonmeditators")
+# Investigate Ideal LAP differences by Frequency.
+plotFreq <- joined %>%
+  group_by(Frequency) %>%
+  summarise(MeanAge = mean(Age),
+            MeanActualLAP = mean(ActualLAP),
+            MeanIdealLAP = mean(IdealLAP),
+            "ci" = ci(IdealLAP),
+            cilow = MeanIdealLAP - ci,
+            cihi = MeanIdealLAP + ci,
+            n=n())
 ```
 
+```{r echo = F, warning=F}
+p <- ggplot(data= subset(plotFreq, !is.na(Frequency)),
+            mapping = aes(x=Frequency, 
+                          y = MeanIdealLAP))
+p + geom_col()+
+  xlab("Days meditated per week")+ 
+  ylab("Average Ideal LAP Word Rating")+
+  ggtitle("Ideal LAP ratings by meditation frequency")+
+  theme_minimal()+
+  geom_errorbar(data = subset(plotFreq, !is.na(Frequency)),
+                mapping = aes(x=Frequency, ymin=cilow, ymax=cihi), 
+                width=.2,                   
+                position=position_dodge(.9))+
+  scale_fill_discrete(drop=FALSE) + 
+  scale_x_discrete(drop=FALSE)+
+  theme(axis.text.x = element_text(angle = 55, vjust = 1, hjust=1))
+```
+
+####No linear increase in Ideal LAP ratings by duration of average meditation session
+
+```{r echo=F}
+# Investigate Ideal LAP differences by Duration
+plotDur <- joined %>%
+  group_by(Duration) %>%
+  summarise(MeanAge = mean(Age),
+            MeanActualLAP = mean(ActualLAP),
+            MeanIdealLAP = mean(IdealLAP),
+            "ci" = ci(IdealLAP),
+            cilow = MeanIdealLAP - ci,
+            cihi = MeanIdealLAP + ci,
+            n=n())
+```
+
+```{r echo = F, warning=F}
+p <- ggplot(data= subset(plotDur, !is.na(Duration)),
+            mapping = aes(x=Duration, 
+                          y = MeanIdealLAP))
+p + geom_col()+
+  xlab("Length of average meditation session in minutes")+ 
+  ylab("Average Ideal LAP Word Rating")+
+  ggtitle("Ideal LAP ratings by meditation duration")+
+  theme_minimal()+
+  geom_errorbar(data = subset(plotDur, !is.na(Duration)),
+                mapping = aes(x=Duration, ymin=cilow, ymax=cihi), 
+                width=.2,                   
+                position=position_dodge(.9))+
+  scale_fill_discrete(drop=FALSE) + 
+  scale_x_discrete(drop=FALSE)+
+  theme(axis.text.x = element_text(angle = 55, vjust = 1, hjust=1))
+```
+
+
+<!--* Use a chi squared test to see if the gender of Meditators and Nonmeditators significantly differed.
+* Use an ANOVA to see if the age of Meditators and Nonmeditators significantly differed.
+-->
 
 ## Discussion
 
