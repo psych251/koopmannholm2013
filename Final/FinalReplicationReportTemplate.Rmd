@@ -4,13 +4,13 @@ author: "Tysen Dauer (tysen@stanford.edu)"
 date: "`r format(Sys.time(), '%B %d, %Y')`"
 output:
   html_document:
-    toc: yes
+    toc: true
     toc_depth: 3
-    toc_float:
+    toc_float: 
       collapsed: false
+      smooth_scroll: true
 ---
 
-<!-- Replication reports should all use this template to standardize reporting across projects.  These reports will be public supplementary materials that accompany the summary report(s) of the aggregate results. -->
 
 ##Introduction
 
@@ -22,9 +22,7 @@ Study 1 was an online correlation study with the target finding that meditators 
 > Forty-three university students who had been practicing Buddhist-inspired meditation for at least one year, and 48 students who did not practice any form of meditation were recruited for an online study. Meditators and nonmeditators were recruited separately so that neither group knew to whom they were being compared.
 Meditators reported meditating for an average of 4.28 years (SD = 2.92), approximately 2–3 times a week (M = 3.28, SD = 1.84, on an 8-point scale, 1 = *more than once a day* to 8 = *never*), for about 31.16 minutes per session (SD = 14.39). There were no group differences in gender, % Female: Meditators = 51.16, Nonmeditators = 45.83, chi squared(1, 91) = .26, ns. Meditators were significantly older (mean age = 24.98, SD = 6.49) than Nonmeditators (mean age = 20.90, SD = 1.37), F(1, 89) = 18.12, p  < .001, partial eta squared = .17; therefore, we controlled for age in our analyses.
 
-> Participants completed an abridged version of the Affect Valuation Index (AVI; Tsai & Knutson, 2006; Tsai, Knutson, & Fung, 2006), which asks participants to use a 5-point rating scale ranging from 1 (*never*) to 5 (*all the time*) to rate states that varied in terms of arousal (high, low) and valence (positive, negative) based on the affective circumplex (Feldman Barrett & Russell, 1999; Larsen & Diener, 1992; Watson & Tellegen, 1985). Participants rated how often over the course of a typical week they: (a) actually experienced each state (to assess actual affect) and (b) ideally wanted to feel each state (to assess ideal affect). “Calm” and “peaceful” were used to sample LAP states; “enthusiastic” and “euphoric” were used to sample HAP states; “dull” and “sleepy” to sample LAN states, and “hostile” and “worried” to sample HAN states. Cronbach’s alphas were .85 and .82 for actual and ideal LAP, .74 and .66 for actual and ideal HAP, .63 and .24 for actual and ideal LAN, and .50 and .31 for actual and ideal HAN (alphas for negative states tend to be lower than those for positive states due to restricted variance).
-
-> All participants also completed a demographic questionnaire, and meditators completed an assessment of their meditation practice.
+> Cronbach’s alphas were .85 and .82 for actual and ideal LAP, .74 and .66 for actual and ideal HAP, .63 and .24 for actual and ideal LAN, and .50 and .31 for actual and ideal HAN (alphas for negative states tend to be lower than those for positive states due to restricted variance).
 
 ###Power Analysis
 Below is Koopmann-Holm et al.'s "Analyses and Results" discussion for this replication project's key statistic (in **bold**).
@@ -37,12 +35,12 @@ The key statistic is an ANCOVA testing whether Meditators and Nonmeditators diff
 
 A Post Hoc test (Figure 1) reveals that the study had 88% power. The following table of A Priori tests (detailed in Figures 2, 3, 4) show various power and sample sizes to achieve a partial eta squared of 0.10.
 
-```{r echo=FALSE}
+```{r}
 data <- matrix(c(80, 73, 90, 97, 95, 119), nrow=3, byrow=T)
 colnames(data) <- c("Power (%)", "Sample Size")
 ```
 
-```{r results = 'asis', echo=F}
+```{r results = 'asis',   }
 knitr::kable(data, caption = "A Prior Power Tests") 
 ```
 
@@ -56,7 +54,7 @@ The original effect size was reported as a partial eta squared of 0.10. Below ar
 
 ![Figure 4. G*Power A Prior test for 95% power](APriori95.png)
 
-My target sample size will be just above 80% power (80 usable participant data sets). We will recruit a sufficient number of participants to achieve our planned sample size of 80. 
+My target sample size will be just above 80% power (80 usable participant data sets) to allow for participant exclusion noted in the Methods Addendum below. We will recruit a sufficient number of participants to achieve our planned sample size of 80. 
 
 ###Planned Sample
 
@@ -74,7 +72,7 @@ I will recruit participants to take a survey through MTurk. The survey collects 
 
 * An IRB consent paragraph and question. Participants may choose to leave the survey and this point (and report any issues that came up).
 * A page for the participant to enter their MTurk ID.
-* An eligibility block with distractor questions that also triggers an additional assessment at the end of the survey for Meditators. Participants who report meditating but with less than 1 year of experience do not meet the criteria for being either Meditators or Nonmeditators are done with the survey at this point and have the opportunity to report any issues they encountered. 
+* An eligibility block with distractor questions that also triggers an additional meditation assessment at the end of the survey for Meditators. Participants who report meditating but with less than 1 year of experience do not meet the criteria for being either Meditators or Nonmeditators are done with the survey at this point and have the opportunity to report any issues they encountered. 
 * Participants who meet the criteria to be Meditators or Nonmeditators are then told that they have been selected to continue with the survey for an additional bonus payment of 0.25 if they so choose. Participants who do not complete the AVI receive 0.10.
 * The Affect Valuation Index (AVI) items for *actual* affect used by Koopmann-Holm et al. in the same order but broken up into 3 screen-pages.
 * The Affect Valuation Index (AVI) items for *ideal* affect used by Koopmann-Holm et al. in the same order but broken up into 3 screen-pages.
@@ -106,24 +104,24 @@ I also plan to reproduce the remaining sections of Study 1 Figure 1: Ideal Affec
 
 ###Differences from Original Study
 
-My sample will not be limited to college students, will not be recruited on campus, will not separately recruit Meditators and Nonmeditators (rather they will be identified and branched in the Qualtrics survey), will use Qualtrics instead of Remark, and will focus primarily on replicating the Ideal LAP finding from Study 1. Age differences between a college sample and MTurk sample are the most likely place to anticipate differences in findings. <!--I am also using the same survey for both Meditators and Nonmeditators with branches as described above. The each portion of the AVI is also split into three screen-pages instead of one coninuous scrolling page for the participants' ease. -->
+My sample will not be limited to college students, will not be recruited on campus, will not separately recruit Meditators and Nonmeditators (rather they will be identified and branched in the Qualtrics survey), will use Qualtrics instead of Remark, and will focus primarily on replicating the Ideal LAP finding from Study 1. Age differences between a college sample and MTurk sample are the most likely place to anticipate differences in findings. I am also using the same survey for both Meditators and Nonmeditators with branches as described above. Each portion of the AVI is also split into three screen-pages instead of one coninuous scrolling page for the participants' ease.
 
-### Methods Addendum (Post Data Collection)
+###Methods Addendum (Post Data Collection)
 
-#### Actual Sample
+####Actual Sample
 The results below come from a sample of 85 MTurk participants who took the AVI (after excluding 18 participants): 43 Meditators and 42 Nonmeditators. Average age was 34.7 years old. There were more female than male participants (48 Females, 37 Males). Ethnicity was also reported (51 Caucasian American, 6 Black or African American, 6 Asian American, 1 American Indian or Alaska Native, 1 Asian, 13 Caucasian Europeans, 7 Other). In addition to removing subjects who straight-lined (1), I also removed subjects who left portions of the AVI unanswered (17).
 
-#### Differences from pre-data collection methods plan
+####Differences from pre-data collection methods plan
 Rather than starting with a batch of 80 HITs as originally planned, I created 8 batches, each with 45 HITs.
 
 ##Results
 
-### Data preparation
+###Data preparation
 I am uploading a version of the data that does *not* have MTurk IDs or other identifying information (I removed those values from the csv file). NB: I removed the second row of the downloaded csv file which contained the exact text of each question (see .Rmd file for additional information)4.
 
 Following Koopmann-Holm et al.'s analysis, I combine AVI responses for "calm" and "peaceful" together to measure LAP and AVI responses for "enthusiastic" and "euphoric" together to measure HAP. 
 	
-```{r include=F, message=F, warning=F}
+```{r message=F, warning=F}
 ###Data Preparation
 
 ####Load Relevant Libraries and Functions
@@ -225,9 +223,9 @@ levels(joined$Ethnicity) <- list('Caucasian American'="1",
                                   'Other'="8")
 ```
 
-### Confirmatory analysis
+###Confirmatory analysis
 
-```{r echo=F}
+```{r}
 toPlot <- joined %>%
   group_by(Meditator) %>%
   summarise(MeanAge = mean(Age),
@@ -239,29 +237,29 @@ toPlot <- joined %>%
             n=n())
 ```
 
-```{r echo = F, results = 'asis', message=FALSE}
+```{r results = 'asis', message=FALSE}
 knitr::kable(toPlot, caption = "Summary Data") 
 ```
 
-```{r echo=F}
+```{r}
 fit2 <- aov(IdealLAP ~ Meditator + Age + ActualLAP, data=joined)
 ```
 
-```{r echo=F}
+```{r}
 layout(matrix(c(1,2,3,4),2,2))
 plot(fit2)
 ```
 
-```{r echo = F}
+```{r}
 fit2_summary <- summary(fit2)
 ```
 
-```{r echo = F, results = "asis", message = FALSE}
+```{r results = "asis", message = FALSE}
 print(xtable::xtable(fit2_summary, caption = "ANCOVA Summary"),
 type = "html")
 ```
 
-```{r echo = F}
+```{r}
 p <- ggplot(data=toPlot,
             mapping = aes(x=Meditator, 
                           y = MeanIdealLAP))
@@ -279,13 +277,13 @@ p + geom_col(aes(fill = Meditator))+
 
 ![Original plot of LAP for Meditators and Nonmeditators](LAP.png)
 
-```{r echo = F}
+```{r}
 # Calculate partial eta squared
 # Sanity check on ANCOVA results by using another method (eta_sq from "sjstats")
 My_eta <- eta_sq(fit2, partial=TRUE) # This equals the SS(factor=Meditator)/(SS(factor=Meditator)+SS(residual))
 ```
 
-```{r echo = F, results = 'asis', message=FALSE}
+```{r results = 'asis', message=FALSE}
 knitr::kable(My_eta, caption = "Partial eta squared values") 
 ```
   
@@ -293,7 +291,7 @@ knitr::kable(My_eta, caption = "Partial eta squared values")
 
 ####Ideal LAP Responses as Scatterplot
 
-```{r echo=F}
+```{r}
 # Make a scatterplot of ideal LAP reponses for Meditators and Nonmeditators.
 s <- ggplot(data=joined,
             mapping=aes(x=Meditator,
@@ -308,7 +306,7 @@ s + geom_jitter(width=.2)+
 
 #####Ideal HAP
 
-```{r echo=F}
+```{r}
 plotIdealHAP <- joined %>%
   group_by(Meditator) %>%
   summarise(MeanAge = mean(Age),
@@ -320,29 +318,29 @@ plotIdealHAP <- joined %>%
             n=n())
 ```
 
-```{r echo = F, results = 'asis', message=FALSE}
+```{r results = 'asis', message=FALSE}
 knitr::kable(plotIdealHAP, caption = "Ideal HAP Summary Data") 
 ```
 
-```{r echo=F}
+```{r}
 fitIdealHAP <- aov(IdealHAP ~ Meditator + Age + ActualHAP, data=joined)
 ```
 
-```{r echo=F}
+```{r}
 layout(matrix(c(1,2,3,4),2,2))
 plot(fitIdealHAP)
 ```
 
-```{r echo = F}
+```{r}
 fitIdealHAP_summary <- summary(fitIdealHAP)
 ```
 
-```{r echo = F, results = "asis", message = FALSE}
+```{r results = "asis", message = FALSE}
 print(xtable::xtable(fitIdealHAP_summary, caption = "Ideal HAP ANCOVA Summary"),
 type = "html")
 ```
 
-```{r echo = F}
+```{r}
 p <- ggplot(data=plotIdealHAP,
             mapping = aes(x=Meditator, 
                           y = MeanIdealHAP))
@@ -362,7 +360,7 @@ p + geom_col(aes(fill = Meditator))+
 
 The similarities in Actual LAP ratings between Meditators and Nonmeditators mirror Koopmann-Holm et al.'s finding in Figure 1 (above).
 
-```{r echo=F}
+```{r}
 plotActualLAP <- joined %>%
   group_by(Meditator) %>%
   summarise(MeanAge = mean(Age),
@@ -374,29 +372,29 @@ plotActualLAP <- joined %>%
             n=n())
 ```
 
-```{r echo = F, results = 'asis', message=FALSE}
+```{r results = 'asis', message=FALSE}
 knitr::kable(plotActualLAP, caption = "Actual LAP Summary Data") 
 ```
 
-```{r echo=F}
+```{r}
 fitActualLAP <- aov(ActualLAP ~ Meditator + Age + IdealLAP, data=joined)
 ```
 
-```{r echo=F}
+```{r}
 layout(matrix(c(1,2,3,4),2,2))
 plot(fitActualLAP)
 ```
 
-```{r echo = F}
+```{r}
 fitActualLAP_summary <- summary(fitActualLAP)
 ```
 
-```{r echo = F, results = "asis", message = FALSE}
+```{r results = "asis", message = FALSE}
 print(xtable::xtable(fitActualLAP_summary, caption = "Actual LAP ANCOVA Summary"),
 type = "html")
 ```
 
-```{r echo = F}
+```{r}
 p <- ggplot(data=plotActualLAP,
             mapping = aes(x=Meditator, 
                           y = MeanActualLAP))
@@ -416,7 +414,7 @@ p + geom_col(aes(fill = Meditator))+
 
 The similarities in Actual HAP ratings between Meditators and Nonmeditators mirror Koopmann-Holm et al.'s finding in Figure 1 (above).
 
-```{r echo=F}
+```{r}
 plotActualHAP <- joined %>%
   group_by(Meditator) %>%
   summarise(MeanAge = mean(Age),
@@ -428,29 +426,29 @@ plotActualHAP <- joined %>%
             n=n())
 ```
 
-```{r echo = F, results = 'asis', message=FALSE}
+```{r results = 'asis', message=FALSE}
 knitr::kable(plotActualHAP, caption = "Actual HAP Summary Data") 
 ```
 
-```{r echo=F}
+```{r}
 fitActualHAP <- aov(ActualHAP ~ Meditator + Age + IdealHAP, data=joined)
 ```
 
-```{r echo=F}
+```{r}
 layout(matrix(c(1,2,3,4),2,2))
 plot(fitActualHAP)
 ```
 
-```{r echo = F}
+```{r}
 fitActualHAP_summary <- summary(fitActualHAP)
 ```
 
-```{r echo = F, results = "asis", message = FALSE}
+```{r results = "asis", message = FALSE}
 print(xtable::xtable(fitActualHAP_summary, caption = "Actual HAP ANCOVA Summary"),
 type = "html")
 ```
 
-```{r echo = F}
+```{r}
 p <- ggplot(data=plotActualHAP,
             mapping = aes(x=Meditator, 
                           y = MeanActualHAP))
@@ -466,10 +464,10 @@ p + geom_col(aes(fill = Meditator))+
  
 ```
 
-####Ideal LAP differences by US Region 
+####Ideal LAP by US Region 
 
-```{r echo=F}
-# Investigate Ideal LAP differences by US region (primarily West Coast versus East Coast).
+```{r}
+# Investigate Ideal LAP differences by US region (primarily interested in West Coast versus East Coast).
 region <- joined %>%
   group_by(Region) %>%
   summarise(MeanAge = mean(Age),
@@ -481,7 +479,7 @@ region <- joined %>%
             n=n())
 ```
 
-```{r echo = F}
+```{r}
 p <- ggplot(data=region,
             mapping = aes(x=Region, 
                           y = MeanIdealLAP))
@@ -496,27 +494,27 @@ p + geom_col(aes(fill = Region))+
                 position=position_dodge(.9))
  
 ```
-```{r echo=F}
+
+```{r}
 fitregion <- aov(IdealLAP ~ Region + Age + ActualLAP, data=joined)
 ```
 
-```{r echo=F}
+```{r}
 layout(matrix(c(1,2,3,4),2,2))
 plot(fitregion)
 ```
 
-```{r echo = F}
+```{r}
 fitregion_summary <- summary(fitregion)
 ```
 
-```{r echo = F, results = "asis"}
+```{r results = "asis"}
 print(xtable::xtable(fitregion_summary, caption = "ANCOVA Region Summary"),type = "html")
 ```
 
 ####Ideal LAP Differences by Reported Ethnicity
 
-```{r echo=F}
-# Investigate Ideal LAP differences by US region (primarily West Coast versus East Coast).
+```{r}
 plotEthnicity <- joined %>%
   group_by(Ethnicity) %>%
   summarise(MeanAge = mean(Age),
@@ -528,7 +526,7 @@ plotEthnicity <- joined %>%
             n=n())
 ```
 
-```{r echo = F, warning=F}
+```{r warning=F}
 p <- ggplot(data=plotEthnicity,
             mapping = aes(x=Ethnicity, 
                           y = MeanIdealLAP))
@@ -547,26 +545,26 @@ p + geom_col(aes(fill = Ethnicity))+
  
 ```
 
-```{r echo=F}
+```{r}
 fitEth <- aov(IdealLAP ~ Ethnicity + Age + ActualLAP, data=joined)
 ```
 
-```{r echo=F}
+```{r}
 layout(matrix(c(1,2,3,4),2,2))
 plot(fitEth)
 ```
 
-```{r echo = F}
+```{r}
 fitEth_summary <- summary(fitEth)
 ```
 
-```{r echo = F, results = "asis"}
+```{r results = "asis"}
 print(xtable::xtable(fitEth_summary, caption = "ANCOVA Ethnicity Summary"),type = "html")
 ```
 
 ####Frequency of Meditators' practice
 
-```{r echo=F}
+```{r}
 # Plotting Meditators' reported Frequency for meditating.
 s <- ggplot(data= subset(joined, Meditator == "Meditators"),
             mapping=aes(x=Frequency))
@@ -580,7 +578,7 @@ s + geom_bar()+
 
 ####Duration of Meditators' Practice
 
-```{r echo=F}
+```{r}
 s <- ggplot(data= subset(joined, Meditator=="Meditators"),
             mapping=aes(x=Duration))
 s + geom_bar()+
@@ -593,7 +591,7 @@ s + geom_bar()+
 
 ####No linear relationship between Ideal LAP ratings and frequency of meditation practice
 
-```{r echo=F}
+```{r}
 # Investigate Ideal LAP differences by Frequency.
 plotFreq <- joined %>%
   group_by(Frequency) %>%
@@ -606,7 +604,7 @@ plotFreq <- joined %>%
             n=n())
 ```
 
-```{r echo = F, warning=F}
+```{r warning=F}
 p <- ggplot(data= subset(plotFreq, !is.na(Frequency)),
             mapping = aes(x=Frequency, 
                           y = MeanIdealLAP))
@@ -624,9 +622,26 @@ p + geom_col()+
   theme(axis.text.x = element_text(angle = 55, vjust = 1, hjust=1))
 ```
 
+```{r}
+fitFreq <- aov(IdealLAP ~ Frequency + Age + ActualLAP, data=joined)
+```
+
+```{r}
+layout(matrix(c(1,2,3,4),2,2))
+plot(fitFreq)
+```
+
+```{r}
+fitFreq_summary <- summary(fitFreq)
+```
+
+```{r results = "asis"}
+print(xtable::xtable(fitFreq_summary, caption = "ANCOVA Frequency Summary"),type = "html")
+```
+
 ####No linear increase in Ideal LAP ratings by duration of average meditation session
 
-```{r echo=F}
+```{r}
 # Investigate Ideal LAP differences by Duration
 plotDur <- joined %>%
   group_by(Duration) %>%
@@ -639,7 +654,7 @@ plotDur <- joined %>%
             n=n())
 ```
 
-```{r echo = F, warning=F}
+```{r warning=F}
 p <- ggplot(data= subset(plotDur, !is.na(Duration)),
             mapping = aes(x=Duration, 
                           y = MeanIdealLAP))
@@ -670,7 +685,15 @@ The primary result of the confirmatory analysis shows no significant difference 
 
 ### Commentary
 
-This inability to replicate the key statistic could be explained by a number of differences between the original study and this replication. First, Koopmann-Holm et al. recruited students on campus and then directed them to an online study. That campus population differed in age from our replication and may also contain less variance between participants in comparison with our US-wide sample. Secondly, Koopmann-Holm et al. recruited Meditators and Nonmeditators separately. Our replication used a short block of eligibility questions that masked the eligibility criteria. Thus, while Koopmann-Holm, et al.'s Meditators were recruited for being meditators (or so it sounds in the article), our Meditators were unaware that their meditation practice was central to the study. Perhaps Koopmann-Holm et al.'s Meditators' awareness of the importance of their meditating primed them to report higher LAP values? Directly comparing the average number of years Meditators meditated between the original and this replication be ideal. Unfortunately I failed to collect the number of years Meditators practiced (in the final version of the survey participants only noted if it was less than one year or more than one year). While the frequency and duration of meditation looks similar for the original study and the replication, the long term effects (measured in years) remains unknown. Finally, our implementation of the AVI split up ideal and actual affect sections into 3 sections each to minimize participant fatigue. In comparison with the original AVI where ideal and actual affect each have one page, our AVI could cause participants to be less certain of which section (ideal or actual) they were completing (I did, however, repeat the appropriate instructions at the top of each survey page). 
-<!--
-Add open-ended commentary (if any) reflecting (a) insights from follow-up exploratory analysis, (b) assessment of the meaning of the replication (or not) - e.g., for a failure to replicate, are the differences between original and present study ones that definitely, plausibly, or are unlikely to have been moderators of the result, and (c) discussion of any objections or challenges raised by the current and original authors about the replication attempt.  None of these need to be long.
--->
+This inability to replicate the key statistic could be explained by a number of differences between the original study and this replication. 
+
+First, Koopmann-Holm et al. recruited students on campus and then directed them to an online study. That campus population differed in age from our replication and may also contain less variance between participants in comparison with our US-wide sample. 
+
+Secondly, Koopmann-Holm et al. recruited Meditators and Nonmeditators separately. Our replication used a short block of eligibility questions that masked the eligibility criteria. Thus, while Koopmann-Holm, et al.'s Meditators were recruited for being meditators (or so it sounds in the article), our Meditators were unaware that their meditation practice was central to the study. Perhaps Koopmann-Holm et al.'s Meditators' awareness of the importance of their meditating primed them to report higher LAP values? Or perhaps the original study's Meditators had more meditation experience which resulted in higher ideal LAP ratings (they reported an average of 4.28 years of meditation, SD = 2.92). Directly comparing the average number of years Meditators meditated between the original study and this replication would be ideal. Unfortunately I failed to collect the number of years Meditators practiced (in the final version of the survey participants only noted if it was less than one year or more than one year). While the frequency and duration of meditation looks similar for the original study and the replication, the long term effects (measured in years) remain unknown. 
+
+Finally, our implementation of the AVI split up ideal and actual affect sections into 3 sections each to minimize participant fatigue. In comparison with the original AVI where ideal and actual affect each have one page, our AVI could cause participants to be less certain of which section (ideal or actual) they were completing (I did, however, repeat the appropriate instructions at the top of each survey page). 
+
+<!--Next steps:
+* Compute Cronbach's alphas for ideal and actual LAP and HAP.-->
+
+
